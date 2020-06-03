@@ -49,13 +49,20 @@ public final class EchoServer {
         }
 
         // Configure the server.
+        // 使用reactor主从多线程模式
+
+        // parent reactor
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+
+        // child group
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         final EchoServerHandler serverHandler = new EchoServerHandler();
         try {
+            // 引导类
             ServerBootstrap b = new ServerBootstrap();
+            // 设置主线程和子线程
             b.group(bossGroup, workerGroup)
-             .channel(NioServerSocketChannel.class)
+             .channel(NioServerSocketChannel.class) // 定义服务为NIO模型
              .option(ChannelOption.SO_BACKLOG, 100)
              .handler(new LoggingHandler(LogLevel.INFO))
              .childHandler(new ChannelInitializer<SocketChannel>() {
