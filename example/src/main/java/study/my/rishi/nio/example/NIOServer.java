@@ -36,8 +36,8 @@ public class NIOServer {
         while (true) {
 
             // 等待1s,没有事件发生则返回
-            if (selector.select(1000) == 0) {
-                System.out.println("服务器等待了1s,无连接");
+            if (selector.select(2000) == 0) {
+                System.out.println("服务器等待了2s,无连接");
                 continue;
             }
 
@@ -54,6 +54,11 @@ public class NIOServer {
                     // 有OP_ACCEPT事件发生
                     // 给该客户端生成SocketChannel
                     SocketChannel socketChannel = serverSocketChannel.accept();
+                    System.out.println("客户端连接成功，成功了一个socketChannel：" + socketChannel.hashCode());
+
+                    // 将sokcetChannel设置为非阻塞的
+                    socketChannel.configureBlocking(false);
+
                     // 将socketChannel注册到Selector，关注事件为OP_READ,同时给socketChannel关联一个Buffer
                     socketChannel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocate(100));
                 }
