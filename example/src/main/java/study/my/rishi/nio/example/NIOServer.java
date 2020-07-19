@@ -72,9 +72,10 @@ public class NIOServer {
                     channel.read(buffer);
                     System.out.println("from 客户端：" + new String(buffer.array()));
                 }
+                iterator.remove();
             }
 
-            iterator.remove();
+
         }
 
     }
