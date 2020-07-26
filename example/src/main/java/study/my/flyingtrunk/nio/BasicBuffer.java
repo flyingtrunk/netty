@@ -1,4 +1,4 @@
-package study.my.rishi.nio;
+package study.my.flyingtrunk.nio;
 
 import java.nio.IntBuffer;
 

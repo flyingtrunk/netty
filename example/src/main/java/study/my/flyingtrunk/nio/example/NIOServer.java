@@ -1,4 +1,4 @@
-package study.my.rishi.nio.example;
+package study.my.flyingtrunk.nio.example;
 
 
 import java.net.InetSocketAddress;
