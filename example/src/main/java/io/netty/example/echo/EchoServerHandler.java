@@ -25,11 +25,20 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 @Sharable
 public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
+    /**
+     * 读取数据事件
+     * @param ctx 上下文对象 含有管道，通道，连接地址
+     * @param msg 客户端发送的数据
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ctx.write(msg);
     }
 
+    /**
+     * 读取数据完毕
+     * @param ctx
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();

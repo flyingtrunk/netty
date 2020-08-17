@@ -46,7 +46,7 @@ public final class EchoClient {
         final SslContext sslCtx;
         if (SSL) {
             sslCtx = SslContextBuilder.forClient()
-                .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+                    .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
         } else {
             sslCtx = null;
         }
@@ -55,20 +55,22 @@ public final class EchoClient {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
-             .option(ChannelOption.TCP_NODELAY, true)
-             .handler(new ChannelInitializer<SocketChannel>() {
-                 @Override
-                 public void initChannel(SocketChannel ch) throws Exception {
-                     ChannelPipeline p = ch.pipeline();
-                     if (sslCtx != null) {
-                         p.addLast(sslCtx.newHandler(ch.alloc(), HOST, PORT));
-                     }
-                     //p.addLast(new LoggingHandler(LogLevel.INFO));
-                     p.addLast(new EchoClientHandler());
-                 }
-             });
+            b.group(group) // 设置线程组
+                    .channel(NioSocketChannel.class) // 设置客户端通道的实现类
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    .handler(
+
+                            new ChannelInitializer<SocketChannel>() {
+                                @Override
+                                public void initChannel(SocketChannel ch) throws Exception {
+                                    ChannelPipeline p = ch.pipeline();
+                                    if (sslCtx != null) {
+                                        p.addLast(sslCtx.newHandler(ch.alloc(), HOST, PORT));
+                                    }
+                                    //p.addLast(new LoggingHandler(LogLevel.INFO));
+                                    p.addLast(new EchoClientHandler());
+                                }
+                            });
 
             // Start the client.
             ChannelFuture f = b.connect(HOST, PORT).sync();

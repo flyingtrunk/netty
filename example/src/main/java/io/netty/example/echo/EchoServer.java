@@ -52,9 +52,11 @@ public final class EchoServer {
         // 使用reactor主从多线程模式
 
         // parent reactor
+        // boss group 只处理连接请求，真正的客户端业务处理，会交给work group处理
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 
         // child group
+        // 含有子线程NioEventLoop的个数默认是cpu核数 * 2
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         final EchoServerHandler serverHandler = new EchoServerHandler();
         try {
@@ -62,20 +64,24 @@ public final class EchoServer {
             ServerBootstrap b = new ServerBootstrap();
             // 设置主线程和子线程
             b.group(bossGroup, workerGroup)
-             .channel(NioServerSocketChannel.class) // 定义服务为NIO模型
-             .option(ChannelOption.SO_BACKLOG, 100)
-             .handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new ChannelInitializer<SocketChannel>() {
-                 @Override
-                 public void initChannel(SocketChannel ch) throws Exception {
-                     ChannelPipeline p = ch.pipeline();
-                     if (sslCtx != null) {
-                         p.addLast(sslCtx.newHandler(ch.alloc()));
-                     }
-                     //p.addLast(new LoggingHandler(LogLevel.INFO));
-                     p.addLast(serverHandler);
-                 }
-             });
+                    .channel(NioServerSocketChannel.class) // 定义服务为NIO模型
+                    .option(ChannelOption.SO_BACKLOG, 100) // 设置线程队列等待的连接个数
+                    .childOption(ChannelOption.SO_KEEPALIVE, true) // 设置保持活动的连接状态
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    // 给workgroup的eventloop对应的管道设置处理器
+                    .childHandler(
+                            // 创建一个通道测试对象
+                            new ChannelInitializer<SocketChannel>() {
+                                @Override
+                                public void initChannel(SocketChannel ch) throws Exception {
+                                    ChannelPipeline p = ch.pipeline();
+                                    if (sslCtx != null) {
+                                        p.addLast(sslCtx.newHandler(ch.alloc()));
+                                    }
+                                    //p.addLast(new LoggingHandler(LogLevel.INFO));
+                                    p.addLast(serverHandler);
+                                }
+                            });
 
             // Start the server.
             ChannelFuture f = b.bind(PORT).sync();
