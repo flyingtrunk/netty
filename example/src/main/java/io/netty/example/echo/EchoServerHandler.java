@@ -27,6 +27,9 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
+        System.out.println("服务器端读取线程:" + Thread.currentThread().getName());
+        System.out.println("channel: "+ ctx.channel());
+        System.out.println("pipeline: " + ctx.pipeline());
         ctx.write(msg);
     }
 

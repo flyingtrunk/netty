@@ -571,7 +571,7 @@
               <classifier>sources</classifier>
               <includes>io/netty/**</includes>
               <includeScope>runtime</includeScope>
-              <includeGroupIds>${project.groupId}</includeGroupIds>
+        r      <includeGroupIds>${project.groupId}</includeGroupIds>
               <outputDirectory>${generatedSourceDir}</outputDirectory>
             </configuration>
           </execution>

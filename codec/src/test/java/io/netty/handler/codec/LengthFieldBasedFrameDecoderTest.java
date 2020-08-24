@@ -25,6 +25,30 @@ import org.junit.Test;
 public class LengthFieldBasedFrameDecoderTest {
 
     @Test
+    public void testDiscardFrame1() {
+
+        EmbeddedChannel channel = new EmbeddedChannel(new LengthFieldBasedFrameDecoder(14, 0, 2, 0,2));
+        String s = "Hello, World";
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeShort(12);
+        buf.writeBytes(s.getBytes());
+        try {
+            channel.writeInbound(buf);
+            //Assert.fail();
+        } catch (TooLongFrameException e) {
+            // expected
+        }
+        Assert.assertTrue(channel.finish());
+        ByteBuf b = channel.readInbound();
+        byte[] bytes = new byte[12];
+        b.readBytes(bytes);
+        System.out.println(new String(bytes));
+    }
+
+
+
+
+    @Test
     public void testDiscardTooLongFrame1() {
         ByteBuf buf = Unpooled.buffer();
         buf.writeInt(32);
