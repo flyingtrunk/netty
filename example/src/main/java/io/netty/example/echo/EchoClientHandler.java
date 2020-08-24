@@ -39,16 +39,30 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    /**
+     * 当通道就绪时就会触发该方法
+     * @param ctx
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        System.out.println("client: " + ctx);
         ctx.writeAndFlush(firstMessage);
     }
 
+    /**
+     * 当通道有读取事件时，会触发
+     * @param ctx
+     * @param msg
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ctx.write(msg);
     }
 
+    /**
+     * 当读取完成时会发生
+     * @param ctx
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
        ctx.flush();
