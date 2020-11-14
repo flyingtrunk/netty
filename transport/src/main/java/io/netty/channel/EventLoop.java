@@ -25,6 +25,10 @@ import io.netty.util.concurrent.OrderedEventExecutor;
  *
  */
 public interface EventLoop extends OrderedEventExecutor, EventLoopGroup {
+    /**
+     * 用于返回当前实例所属的EventLoopGroup的引用
+     * @return
+     */
     @Override
     EventLoopGroup parent();
 }
