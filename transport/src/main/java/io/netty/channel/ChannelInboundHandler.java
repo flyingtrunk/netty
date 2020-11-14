@@ -23,27 +23,32 @@ public interface ChannelInboundHandler extends ChannelHandler {
 
     /**
      * The {@link Channel} of the {@link ChannelHandlerContext} was registered with its {@link EventLoop}
+     * 注册到EventLoop上并且能够处理IO时被调用
      */
     void channelRegistered(ChannelHandlerContext ctx) throws Exception;
 
     /**
      * The {@link Channel} of the {@link ChannelHandlerContext} was unregistered from its {@link EventLoop}
+     * 当Channel从它的EventLoop注销并且无法处理任何IO时被调用
      */
     void channelUnregistered(ChannelHandlerContext ctx) throws Exception;
 
     /**
      * The {@link Channel} of the {@link ChannelHandlerContext} is now active
+     * 当Channel处于活动时被调用，Channel已经连接绑定并且已经就绪
      */
     void channelActive(ChannelHandlerContext ctx) throws Exception;
 
     /**
      * The {@link Channel} of the {@link ChannelHandlerContext} was registered is now inactive and reached its
      * end of lifetime.
+     * 当Channel离开活动状态并且不再连接它的远程节点时被调用
      */
     void channelInactive(ChannelHandlerContext ctx) throws Exception;
 
     /**
      * Invoked when the current {@link Channel} has read a message from the peer.
+     * 当Channel读数据时被调用
      */
     void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception;
 
