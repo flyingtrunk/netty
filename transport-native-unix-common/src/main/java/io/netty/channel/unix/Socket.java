@@ -5,7 +5,7 @@
  * version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at:
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -53,6 +53,13 @@ public class Socket extends FileDescriptor {
     public Socket(int fd) {
         super(fd);
         this.ipv6 = isIPv6(fd);
+    }
+
+    /**
+     * Returns {@code true} if we should use IPv6 internally, {@code false} otherwise.
+     */
+    private boolean useIpv6(InetAddress address) {
+        return ipv6 || address instanceof Inet6Address;
     }
 
     public final void shutdown() throws IOException {
@@ -117,7 +124,7 @@ public class Socket extends FileDescriptor {
             scopeId = 0;
             address = ipv4MappedIpv6Address(addr.getAddress());
         }
-        int res = sendTo(fd, ipv6, buf, pos, limit, address, scopeId, port);
+        int res = sendTo(fd, useIpv6(addr), buf, pos, limit, address, scopeId, port);
         if (res >= 0) {
             return res;
         }
@@ -141,7 +148,7 @@ public class Socket extends FileDescriptor {
             scopeId = 0;
             address = ipv4MappedIpv6Address(addr.getAddress());
         }
-        int res = sendToAddress(fd, ipv6, memoryAddress, pos, limit, address, scopeId, port);
+        int res = sendToAddress(fd, useIpv6(addr), memoryAddress, pos, limit, address, scopeId, port);
         if (res >= 0) {
             return res;
         }
@@ -164,7 +171,7 @@ public class Socket extends FileDescriptor {
             scopeId = 0;
             address = ipv4MappedIpv6Address(addr.getAddress());
         }
-        int res = sendToAddresses(fd, ipv6, memoryAddress, length, address, scopeId, port);
+        int res = sendToAddresses(fd, useIpv6(addr), memoryAddress, length, address, scopeId, port);
         if (res >= 0) {
             return res;
         }
@@ -215,8 +222,9 @@ public class Socket extends FileDescriptor {
         int res;
         if (socketAddress instanceof InetSocketAddress) {
             InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
-            NativeInetAddress address = NativeInetAddress.newInstance(inetSocketAddress.getAddress());
-            res = connect(fd, ipv6, address.address, address.scopeId, inetSocketAddress.getPort());
+            InetAddress inetAddress = inetSocketAddress.getAddress();
+            NativeInetAddress address = NativeInetAddress.newInstance(inetAddress);
+            res = connect(fd, useIpv6(inetAddress), address.address, address.scopeId, inetSocketAddress.getPort());
         } else if (socketAddress instanceof DomainSocketAddress) {
             DomainSocketAddress unixDomainSocketAddress = (DomainSocketAddress) socketAddress;
             res = connectDomainSocket(fd, unixDomainSocketAddress.path().getBytes(CharsetUtil.UTF_8));
@@ -255,8 +263,9 @@ public class Socket extends FileDescriptor {
     public final void bind(SocketAddress socketAddress) throws IOException {
         if (socketAddress instanceof InetSocketAddress) {
             InetSocketAddress addr = (InetSocketAddress) socketAddress;
-            NativeInetAddress address = NativeInetAddress.newInstance(addr.getAddress());
-            int res = bind(fd, ipv6, address.address, address.scopeId, addr.getPort());
+            InetAddress inetAddress = addr.getAddress();
+            NativeInetAddress address = NativeInetAddress.newInstance(inetAddress);
+            int res = bind(fd, useIpv6(inetAddress), address.address, address.scopeId, addr.getPort());
             if (res < 0) {
                 throw newIOException("bind", res);
             }
