@@ -30,7 +30,7 @@ public class ReactorTest {
             this.serverSocket.configureBlocking(false);
             // 将ServerSocketChannel注册到Selector上，并设置其对OP_ACCEPT事件感兴趣
             SelectionKey selectionKey = this.serverSocket.register(selector, SelectionKey.OP_ACCEPT);
-            selectionKey.attach(new Object());
+            selectionKey.attach(new Acceptor());
         }
 
         // dispatch loop
@@ -97,6 +97,18 @@ public class ReactorTest {
             selector.wakeup();
         }
 
+        boolean inputIsComplete() {
+            return false;
+        }
+
+        boolean outputIsComplete() {
+            return false;
+        }
+
+        void process(){
+
+        }
+
         @Override
         public void run() {
             try {
@@ -111,10 +123,24 @@ public class ReactorTest {
         }
 
         void read() throws IOException {
+            socket.read(input);
+            if (inputIsComplete()) {
+                process();
+                state = SENDING;
+                sk.interestOps(SelectionKey.OP_WRITE);
+            }
         }
 
         void send() throws IOException {
+            socket.write(output);
+            if (outputIsComplete()) {
+                sk.channel();
+            }
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(1 << 0);
     }
 
 }
