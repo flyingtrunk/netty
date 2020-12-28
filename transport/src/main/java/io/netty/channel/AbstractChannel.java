@@ -554,7 +554,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 closeIfClosed();
                 return;
             }
-
+            // 绑定后，才开始激活
             if (!wasActive && isActive()) {
                 invokeLater(new Runnable() {
                     @Override
