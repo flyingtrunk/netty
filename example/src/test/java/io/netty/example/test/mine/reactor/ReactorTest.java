@@ -1,5 +1,8 @@
 package io.netty.example.test.mine.reactor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -15,6 +18,8 @@ import java.util.Set;
  * @date 2020-11-17
  **/
 public class ReactorTest {
+
+    private Logger logger = LoggerFactory.getLogger(ReactorTest.class);
 
     class Reactor implements Runnable {
 
@@ -47,7 +52,7 @@ public class ReactorTest {
                     selectionKeys.clear();
                 }
             } catch (IOException e) {
-
+                logger.error("e=", e);
             }
         }
 
@@ -137,10 +142,6 @@ public class ReactorTest {
                 sk.channel();
             }
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(1 << 0);
     }
 
 }
