@@ -56,9 +56,9 @@ class MultiThreadEchoServerReactor {
         new Thread(subReactors[1]).start();
     }
 
-
+    // 子反应器
     class SubReactor implements Runnable {
-
+        // 每个线程负责一个选择器的查询和选择
         final Selector selector;
 
         SubReactor(Selector selector) {
@@ -73,6 +73,7 @@ class MultiThreadEchoServerReactor {
                     Set<SelectionKey> selectionKeys = selector.selectedKeys();
                     Iterator<SelectionKey> iterator = selectionKeys.iterator();
                     while (iterator.hasNext()) {
+                        // 反应器负责dispatch收到的事件
                         SelectionKey sk = iterator.next();
                         dispatch(sk);
                     }
@@ -84,7 +85,8 @@ class MultiThreadEchoServerReactor {
         }
 
         void dispatch(SelectionKey sk) {
-
+            Runnable handler = (Runnable) sk.attachment();
+            // 调用之前绑定到选择键的handler处理器对象
         }
     }
 
