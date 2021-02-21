@@ -109,6 +109,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
 
     /**
+     * 本地selector属性，用于注册Java本地channel
      * The NIO {@link Selector}.
      */
     private Selector selector;
