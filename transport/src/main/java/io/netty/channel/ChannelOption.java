@@ -109,9 +109,14 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
     public static final ChannelOption<Boolean> AUTO_CLOSE = valueOf("AUTO_CLOSE");
 
     public static final ChannelOption<Boolean> SO_BROADCAST = valueOf("SO_BROADCAST");
+    // 底层TCP协议的心跳机制，TCP会主动探测空闲连接的有效性，默认的心跳间隔为7200s
     public static final ChannelOption<Boolean> SO_KEEPALIVE = valueOf("SO_KEEPALIVE");
+
+    // SO_SNDBUF-发送缓冲区，SO_RCVBUF-接收缓冲区。设置TCP连接的这两个缓冲区大小
     public static final ChannelOption<Integer> SO_SNDBUF = valueOf("SO_SNDBUF");
     public static final ChannelOption<Integer> SO_RCVBUF = valueOf("SO_RCVBUF");
+
+    // 设置为true时标识地址复用
     public static final ChannelOption<Boolean> SO_REUSEADDR = valueOf("SO_REUSEADDR");
     public static final ChannelOption<Integer> SO_LINGER = valueOf("SO_LINGER");
     public static final ChannelOption<Integer> SO_BACKLOG = valueOf("SO_BACKLOG");
@@ -123,6 +128,7 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
     public static final ChannelOption<Integer> IP_MULTICAST_TTL = valueOf("IP_MULTICAST_TTL");
     public static final ChannelOption<Boolean> IP_MULTICAST_LOOP_DISABLED = valueOf("IP_MULTICAST_LOOP_DISABLED");
 
+    // nagle算法是否启用 该算法将小的碎片数据连接成更大的报文来最小化锁发送报文的数量，默认值true标识关闭
     public static final ChannelOption<Boolean> TCP_NODELAY = valueOf("TCP_NODELAY");
 
     @Deprecated

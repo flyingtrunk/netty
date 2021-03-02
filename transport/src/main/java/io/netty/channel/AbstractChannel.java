@@ -70,7 +70,9 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
     protected AbstractChannel(Channel parent) {
         this.parent = parent;
         id = newId();
+        // 底层nio通道，完成实际的IO操作
         unsafe = newUnsafe();
+        // 一条通道
         pipeline = newChannelPipeline();
     }
 
@@ -206,11 +208,13 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
         return registered;
     }
 
+    // 绑定监听地址
     @Override
     public ChannelFuture bind(SocketAddress localAddress) {
         return pipeline.bind(localAddress);
     }
 
+    // 连接远程服务器。调用后立即返回，返回值为负责连接操作的异步任务ChannelFuture
     @Override
     public ChannelFuture connect(SocketAddress remoteAddress) {
         return pipeline.connect(remoteAddress);
@@ -226,6 +230,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
         return pipeline.disconnect();
     }
 
+    // 关闭通道连接
     @Override
     public ChannelFuture close() {
         return pipeline.close();
@@ -272,12 +277,14 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
         return pipeline.deregister(promise);
     }
 
+    // 读取通道数据，并且启动入站处理
     @Override
     public Channel read() {
         pipeline.read();
         return this;
     }
 
+    // 启动出站流水处理
     @Override
     public ChannelFuture write(Object msg) {
         return pipeline.write(msg);
